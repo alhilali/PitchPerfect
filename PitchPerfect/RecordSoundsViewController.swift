@@ -26,10 +26,6 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         configureUI(false)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    }
-    
     // MARK: Actions
 
     @IBAction func recordAudio(_ sender: Any) {
@@ -64,7 +60,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         if flag {
             performSegue(withIdentifier: "stopRecording", sender: audioRecorder.url)
         } else {
-            print("Issues in recording")
+            displayAlert(title: "Error", message: "Issues in recording")
         }
     }
     
@@ -81,16 +77,19 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     // MARK: - UI Methods
     
     func configureUI(_ isRecording: Bool) {
-        switch(isRecording) {
-        case true:
-            recordingLabel.text = "Recording in progress"
-            stopRecordingButton.isEnabled = true
-            recordButton.isEnabled = false
-        case false:
-            stopRecordingButton.isEnabled = false
-            recordButton.isEnabled = true
-            recordingLabel.text = "Tap to Record"
-        }
+        
+        recordingLabel.text = isRecording ? "Recording in progress" : "Tap to Record"
+        stopRecordingButton.isEnabled = isRecording
+        recordButton.isEnabled = !isRecording
+    }
+    
+    // MARK: - Alert Method
+    func displayAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
+            // TODO: - show tips to avoid issues recording
+        }))
+        self.present(alert, animated: true, completion: nil)
     }
     
 }
